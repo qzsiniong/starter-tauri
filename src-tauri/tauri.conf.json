@@ -5,7 +5,7 @@
   "identifier": "com.starter-tauri.app",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://localhost:1320",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
