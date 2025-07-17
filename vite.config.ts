@@ -3,6 +3,7 @@ import process from 'node:process'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
+import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
 
@@ -15,12 +16,23 @@ export default defineConfig(async () => ({
       imports: [
         'vue',
         '@vueuse/core',
-        // 'vue-router',
+        'vue-router',
       ],
       dts: 'src/auto-imports.d.ts',
     }),
     vue(),
     tailwindcss() as any,
+    VueRouter({
+      dts: 'src/typed-router.d.ts',
+      routesFolder: [
+        {
+          src: 'src/pages',
+          path: '',
+        },
+      ],
+      // files to exclude from the scan
+      exclude: ['**/components/**'],
+    }),
     Inspect(),
   ],
 
