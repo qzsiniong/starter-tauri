@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
+import Inspect from 'vite-plugin-inspect'
 
 const host = process.env.TAURI_DEV_HOST
 
@@ -20,6 +21,7 @@ export default defineConfig(async () => ({
     }),
     vue(),
     tailwindcss() as any,
+    Inspect(),
   ],
 
   resolve: {
