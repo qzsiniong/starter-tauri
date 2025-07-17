@@ -8,6 +8,14 @@ async function greet() {
   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
   greetMsg.value = await invoke('greet', { name: name.value })
 }
+
+useEventListener('mousemove', (e) => {
+  const x = e.clientX / window.innerWidth
+  const y = e.clientY / window.innerHeight
+
+  console.log('🍁 x', x)
+  console.log('🍁 y', y)
+})
 </script>
 
 <template>
