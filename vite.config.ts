@@ -1,13 +1,23 @@
 import path from 'node:path'
 import process from 'node:process'
 import vue from '@vitejs/plugin-vue'
+import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
 
 const host = process.env.TAURI_DEV_HOST
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [vue()],
+  plugins: [
+    AutoImport({
+      imports: [
+        'vue',
+        // 'vue-router', '@vueuse/core'
+      ],
+      dts: 'src/auto-imports.d.ts',
+    }),
+    vue(),
+  ],
 
   resolve: {
     alias: {
