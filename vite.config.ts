@@ -1,5 +1,6 @@
 import path from 'node:path'
 import process from 'node:process'
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig } from 'vite'
@@ -18,6 +19,7 @@ export default defineConfig(async () => ({
       dts: 'src/auto-imports.d.ts',
     }),
     vue(),
+    tailwindcss() as any,
   ],
 
   resolve: {
