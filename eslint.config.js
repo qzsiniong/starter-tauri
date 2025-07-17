@@ -10,5 +10,5 @@ export default antfu({
     },
   },
 
-  ignores: ['src-tauri/target/**'],
+  ignores: ['src-tauri/target/**', 'src/components/ui/**'],
 })
