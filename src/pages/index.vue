@@ -11,7 +11,7 @@ async function screenshot() {
  * @param key - 新的快捷键数组
  */
 function changeShortcut() {
-  invoke('change_shortcut', { key: "command+ctrl+option+shift+k" });
+  invoke('change_shortcut', { key: 'command+ctrl+option+shift+k' })
 }
 </script>
 

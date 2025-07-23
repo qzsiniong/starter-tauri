@@ -4,8 +4,8 @@ import { Path } from 'fabric'
 import { SimpleTool } from './SimpleTool'
 
 export class ArrowTool extends SimpleTool {
-  public type: string = 'arrow';
-  public title: string = '画箭头';
+  public type: string = 'arrow'
+  public title: string = '画箭头'
 
   private drawWidth = 2
   private color = 'red'
@@ -41,6 +41,6 @@ export class ArrowTool extends SimpleTool {
       stroke: this.color,
       fill: this.color,
       strokeWidth: this.drawWidth,
-    });
+    })
   }
 }

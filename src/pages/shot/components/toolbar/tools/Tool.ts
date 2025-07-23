@@ -1,5 +1,4 @@
 import type { Canvas, FabricObject, TPointerEvent, TPointerEventInfo } from 'fabric'
-import { noop } from '@vueuse/core'
 
 export type MouseEvent = TPointerEventInfo<TPointerEvent> & {
   // alreadySelected: boolean

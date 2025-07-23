@@ -1,4 +1,4 @@
-import type { Canvas, XY } from 'fabric'
+import type { XY } from 'fabric'
 import type { MouseEvent } from './Tool'
 import { Circle, Polygon as FabricPolygon, Line } from 'fabric'
 import { Tool } from './Tool'

@@ -1,11 +1,11 @@
 export function useImgSize(imgSrc: MaybeRefOrGetter<string>) {
-  const result = reactive({ width: 0, height: 0, ratio:1 })
+  const result = reactive({ width: 0, height: 0, ratio: 1 })
 
   watchEffect(() => {
     getImgSize(toValue(imgSrc)).then((size) => {
       result.width = size.width
       result.height = size.height
-      result.ratio = size.width / size.height;
+      result.ratio = size.width / size.height
     })
   })
 

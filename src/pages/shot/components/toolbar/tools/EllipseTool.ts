@@ -4,8 +4,8 @@ import { Ellipse as FabricEllipse } from 'fabric'
 import { SimpleTool } from './SimpleTool'
 
 export class EllipseTool extends SimpleTool {
-  public type: string = 'ellipse';
-  public title: string = '画圆';
+  public type: string = 'ellipse'
+  public title: string = '画圆'
 
   private drawWidth = 2
   private color = 'red'

@@ -33,7 +33,7 @@ export function useRegister(shortcuts: MaybeRefOrGetter<string | string[]>, hand
     })
   })
 
-  tryOnMounted(()=>{
+  tryOnMounted(() => {
     unregister(toValue(shortcuts))
   })
 }
