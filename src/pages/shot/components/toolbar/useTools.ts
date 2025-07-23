@@ -29,7 +29,13 @@ export function useTools(canvas: Canvas) {
     activatedTool.value?.deactivate()
 
     const activated = tool.activate() ?? true
-    activatedTool.value = activated ? tool : undefined
+
+    activatedTool.value = tool
+    if (!activated) {
+      setTimeout(() => {
+        activatedTool.value = selectTool
+      }, 300)
+    }
   }
 
   useEventListener(window, 'keyup', (e) => {
@@ -64,8 +70,9 @@ export function useTools(canvas: Canvas) {
     { type: 'ellipse', icon: CircleIcon, title: '画圆', tool: new EllipseTool(canvas, actions) },
     { type: 'polygon', icon: PentagonIcon, title: '画多边形', tool: new PolygonTool(canvas, actions) },
     { type: 'clear', icon: BrushCleaningIcon, title: '清除', tool: new ClearTool(canvas, actions) },
-  ].map(item => ({
+  ].map((item, i) => ({
     ...item,
+    shortcut: item.type === 'clear' ? '0' : `${i + 1}`,
     active: () => activeTool(item.tool),
   }))
 

@@ -26,3 +26,6 @@ dist-ssr
 # generated files
 src/auto-imports.d.ts
 src/typed-router.d.ts
+
+# copy files
+* copy*
