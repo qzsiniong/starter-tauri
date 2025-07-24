@@ -7,11 +7,20 @@ import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
 
+import replace from './vite-plugins/placeholder-replace'
+
 const host = process.env.TAURI_DEV_HOST
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
   plugins: [
+    replace({
+      handles: [
+        { src: '[log-position-placeholder]', target: '[fileName]:[line]' },
+        // { src: 'console\\.log\\(', target: 'console.log("调试输出:  [fileName]:[row] ==> " +' },
+        // { src: 'tauriLog\\.debug\\(', target: 'tauriLog.debug("调试输出:  [fileName]:[row] ==> " +' },
+      ], // 设置占位符数组
+    }),
     AutoImport({
       imports: [
         'vue',
