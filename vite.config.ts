@@ -16,9 +16,8 @@ export default defineConfig(async () => ({
   plugins: [
     replace({
       handles: [
-        { src: '[log-position-placeholder]', target: '[fileName]:[line]' },
-        // { src: 'console\\.log\\(', target: 'console.log("调试输出:  [fileName]:[row] ==> " +' },
-        // { src: 'tauriLog\\.debug\\(', target: 'tauriLog.debug("调试输出:  [fileName]:[row] ==> " +' },
+        { src: '\\[log-position-placeholder\\]', target: '[fileName]:[line]' },
+        { src: 'tauriLogDebug\\(', target: 'tauriLogDebug("调试输出:  [fileName]:[row] ==> " +' },
       ], // 设置占位符数组
     }),
     AutoImport({
@@ -26,6 +25,16 @@ export default defineConfig(async () => ({
         'vue',
         '@vueuse/core',
         'vue-router',
+        {
+          '@tauri-apps/plugin-log': [
+          // default imports
+            ['debug', 'tauriLogDebug'],
+            ['info', 'tauriLogInfo'],
+            ['trace', 'tauriLogTrace'],
+            ['error', 'tauriLogError'],
+            ['warn', 'tauriLogWarn'],
+          ],
+        },
       ],
       dts: 'src/auto-imports.d.ts',
     }),
