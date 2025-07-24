@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import type { EventHandler } from './composables/useContextMenuItems'
 import { convertFileSrc } from '@tauri-apps/api/core'
 import { LogicalSize } from '@tauri-apps/api/dpi'
-
 import { getAllWebviewWindows, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 
 import { XIcon } from 'lucide-vue-next'
-import { useTauriListenCurrent } from '@/composables/useTauriListen'
-import { useContextmenu } from './composables/useContextmenu'
-import { useContextMenuItems } from './composables/useContextMenuItems'
+import { useContextMenu } from './composables/useContextmenu'
 import { useImgSize } from './composables/useImgSize'
 
 const props = defineProps({
@@ -73,54 +69,22 @@ async function closeAll() {
   windows.forEach(w => w.close())
 }
 
-const eventHandler: EventHandler = (event) => {
-  if (event.type === 'close') {
-    close()
-  }
-  else if (event.type === 'closeAll') {
-    closeAll()
-  }
-  else if (event.type === 'ratio') {
-    const ratio = event.payload
+useContextMenu({
+  close,
+  closeAll,
+  toggleShadow() {
+    shadowing.value = !shadowing.value
+  },
+  zoom(ratio) {
     let { width, height } = windowOriginalSize.value
     width = width * ratio
     height = height * ratio
 
     currentWindow.setSize(new LogicalSize(width, height))
-  }
-  else if (event.type === 'toggleShadow') {
-    shadowing.value = !shadowing.value
-  }
-  else {
-    const _exhaustiveCheck: never = event
-  }
-}
-
-useContextmenu(() => ({
-  shadowing: shadowing.value,
-}))
-
-useContextMenuItems(async (event) => {
-  eventHandler(event)
+  },
 }, () => ({
   shadowing: shadowing.value,
 }))
-
-useTauriListenCurrent<number>('ratio', async (e) => {
-  eventHandler({ type: 'ratio', payload: e.payload })
-})
-
-useTauriListenCurrent<number>('close', async () => {
-  eventHandler({ type: 'close' })
-})
-
-useTauriListenCurrent<number>('closeAll', async () => {
-  eventHandler({ type: 'closeAll' })
-})
-
-useTauriListenCurrent<number>('toggleShadow', async () => {
-  eventHandler({ type: 'toggleShadow' })
-})
 
 useEventListener('wheel', async (e) => {
   e.preventDefault() // 阻止页面默认滚动（如果需要）

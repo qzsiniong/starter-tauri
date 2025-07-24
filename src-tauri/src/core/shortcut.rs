@@ -58,7 +58,7 @@ fn _register_shortcut_upon_start(app: &App) {
         .on_shortcut(shortcut, move |app, scut, event| {
             if scut == &shortcut {
                 if let ShortcutState::Pressed = event.state() {
-                    pin::pin(&app);
+                    pin::pin(&app).expect("贴图失败");
                 }
             }
         })
