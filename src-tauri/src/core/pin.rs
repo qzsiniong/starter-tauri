@@ -2,7 +2,9 @@ use std::fs;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
+use std::path::PathBuf;
 
+use rand::Rng;
 use tauri::image::Image;
 use tauri::utils::config::WindowConfig;
 use tauri::AppHandle;
@@ -26,15 +28,26 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
             // println!("读取剪贴板图片失败: {}", err);
             // return;
 
-            let img_path = data_dir.join("pin/temp.png");
-            fs::read(img_path).unwrap()
+            get_random_image(&data_dir).unwrap()
         }
     };
 
     // 计算图片路径（hash）
     let mut hasher = DefaultHasher::new();
     bytes.hash(&mut hasher);
-    let hash = hasher.finish();
+    let mut hash = hasher.finish().to_string();
+
+    #[cfg(debug_assertions)]
+    {
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        hash = format!("{hash}-{timestamp}");
+    }
+
     let image_path = data_dir.join(format!("pin/{hash}.png"));
 
     // 计算图片尺寸
@@ -80,7 +93,7 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-pub fn get_pin_window_conf(app: &AppHandle) -> WindowConfig {
+fn get_pin_window_conf(app: &AppHandle) -> WindowConfig {
     app.config()
         .app
         .windows
@@ -88,4 +101,38 @@ pub fn get_pin_window_conf(app: &AppHandle) -> WindowConfig {
         .find(|c| c.label == WINDOW_PIN_LABEL_PREFIX)
         .unwrap()
         .clone()
+}
+
+fn get_random_image(data_dir: &PathBuf) -> std::io::Result<Vec<u8>> {
+    let images_dir = data_dir.join("pin/rand");
+    // 读取目录中的所有文件
+    let entries = fs::read_dir(images_dir)?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .collect::<Vec<_>>();
+
+    // 随机选择一个图片文件
+    let mut rng = rand::rng();
+    let random_index = rng.random_range(0..entries.len());
+    let selected_image_path = &entries[random_index];
+
+    fs::read(&selected_image_path)
+}
+
+fn get_random_image_from_picsum() -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    // 1. 随机生成图片尺寸（指定范围避免尺寸过大或过小）
+    let mut rng = rand::rng();
+    let width = rng.random_range(200..=800); // 宽：200-800 之间随机
+    let height = rng.random_range(200..=800); // 高：200-800 之间随机
+    println!("随机生成的图片尺寸：{}x{}", width, height);
+
+    // 2. 拼接 picsum.photos 的 URL
+    let url = format!("https://picsum.photos/{}/{}", width, height);
+
+    let body = reqwest::blocking::get(url).expect("获取图片失败");
+    let image_bytes = body.bytes().expect("读取图片内容失败");
+
+    println!("成功获取图片，字节长度：{} 字节", image_bytes.len());
+
+    Ok(image_bytes.into())
 }
