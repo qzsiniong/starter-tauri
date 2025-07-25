@@ -103,7 +103,10 @@
     "zshot"
   ],
   "files.associations": {
-    "*.css": "tailwindcss"
+    "*.css": "tailwindcss",
+    "tauri.conf.json": "jsonc",
+    "tauri.*.conf.json": "jsonc",
+    "*.json5": "jsonc"
   },
   "editor.quickSuggestions": {
     "strings": "on"

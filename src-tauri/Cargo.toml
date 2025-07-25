@@ -19,12 +19,13 @@ crate-type = [
 ]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "2", features = [ "config-json5" ] }
 
 [dependencies]
 tauri = { version = "2", features = [
   "protocol-asset",
-  "macos-private-api"
+  "macos-private-api",
+  "config-json5"
 ] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = [ "derive" ] }

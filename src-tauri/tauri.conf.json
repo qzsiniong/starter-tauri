@@ -40,7 +40,11 @@
           "state": "active"
         }
       },
+      // 贴图窗口配置
       {
+        // 启动时不创建窗口
+        // 使用`app.config().app.windows`获取配置
+        // 然后`WebviewWindowBuilder::from_config`创建窗口
         "create": false,
         "label": "pin-",
         "url": "/pin?path=",
@@ -49,7 +53,7 @@
         "alwaysOnTop": true,
         "decorations": false,
         "maximizable": false,
-        "resizable":false,
+        "resizable": false,
         "transparent": true,
         "acceptFirstMouse": true,
         "focus": false,
