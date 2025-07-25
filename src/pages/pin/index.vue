@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { convertFileSrc, invoke } from '@tauri-apps/api/core'
+import { convertFileSrc } from '@tauri-apps/api/core'
 
 import { LogicalSize } from '@tauri-apps/api/dpi'
 import { getAllWebviewWindows, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { throttle } from 'lodash-es'
 import { XIcon } from 'lucide-vue-next'
+import { commands } from '@/bindings'
 import { useWebviewWindowInitialSize } from '@/composables/useWebviewWindowInitialSize'
 import { useContextMenu } from './composables/useContextMenu'
 
@@ -62,10 +63,7 @@ useContextMenu({
 
 async function handleZoom(deltaY: number) {
   // 发送缩放请求到 Rust 后端
-  await invoke('zoom_window', {
-    initialSize: initialSize.value!,
-    zoomDirection: deltaY,
-  })
+  await commands.zoomWindow(initialSize.value!, deltaY)
 }
 
 const throttledHandleZoom = throttle(handleZoom, 1)

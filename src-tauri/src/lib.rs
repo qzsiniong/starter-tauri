@@ -1,3 +1,8 @@
+#[cfg(debug_assertions)]
+use specta_typescript::Typescript;
+use tauri::ipc::Invoke;
+use tauri_specta::{collect_commands, Builder};
+
 mod commands;
 mod constants;
 mod core;
@@ -12,13 +17,26 @@ pub fn run() {
         // .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .setup(|app| core::setup(&app, app.handle().clone()))
-        .invoke_handler(tauri::generate_handler![
+        .invoke_handler(init_invoke_handler())
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+
+fn init_invoke_handler() -> impl Fn(Invoke) -> bool {
+    let builder = Builder::<tauri::Wry>::new()
+        // Then register them (separated by a comma)
+        .commands(collect_commands![
             commands::take_screenshot,
             commands::zoom_window,
             core::shortcut::change_shortcut,
             core::shortcut::unregister_shortcut,
             core::shortcut::get_current_shortcut,
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        ]);
+
+    #[cfg(debug_assertions)] // <- Only export on non-release builds
+    builder
+        .export(Typescript::default(), "../src/bindings.ts")
+        .expect("Failed to export typescript bindings");
+
+    builder.invoke_handler()
 }

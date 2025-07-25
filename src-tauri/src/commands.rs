@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use tauri::{
-    AppHandle, LogicalPosition, LogicalSize, Manager, PhysicalPosition, PhysicalSize, WebviewUrl,
+    AppHandle, LogicalPosition, Manager, PhysicalPosition, PhysicalSize, Pixel, WebviewUrl,
     WebviewWindowBuilder, Window,
 };
 use xcap::Monitor;
@@ -16,6 +16,7 @@ use crate::{
 };
 
 #[tauri::command]
+#[specta::specta]
 pub fn take_screenshot(app: AppHandle) -> Result<(), String> {
     if is_screenshot_ing(&app) {
         return Err("screenshot is ing".to_string());
@@ -75,11 +76,43 @@ pub fn take_screenshot(app: AppHandle) -> Result<(), String> {
     /* `std::string::String` value */
 }
 
+// #[derive(serde::Serialize, serde::Deserialize, specta::Type)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    // Eq,
+    PartialEq,
+    // Ord,
+    PartialOrd,
+    Default,
+    // Hash,
+    specta::Type,
+    serde::Serialize,
+    serde::Deserialize,
+)]
+// #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub struct MyLogicalSize {
+    pub width: f64,
+    pub height: f64,
+}
+
+impl MyLogicalSize {
+    // #[inline]
+    pub fn to_physical<X: Pixel>(&self, scale_factor: f64) -> PhysicalSize<X> {
+        // assert!(validate_scale_factor(scale_factor));
+        let width = self.width * scale_factor;
+        let height = self.height * scale_factor;
+        PhysicalSize::new(width, height).cast()
+    }
+}
+
 #[tauri::command]
+#[specta::specta] // < You must annotate your commands
 pub fn zoom_window(
     _app: AppHandle,
     window: Window,
-    initial_size: LogicalSize<f64>,
+    initial_size: MyLogicalSize,
     zoom_direction: i32,
 ) -> Result<(), String> {
     // 计算新的缩放比例

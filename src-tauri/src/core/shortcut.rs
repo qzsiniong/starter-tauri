@@ -68,14 +68,16 @@ fn _register_shortcut_upon_start(app: &App) {
 
 /// 获取当前存储的快捷键，作为字符串返回
 #[tauri::command]
-pub fn get_current_shortcut<R: Runtime>(app: AppHandle<R>) -> Result<String, String> {
+#[specta::specta]
+pub fn get_current_shortcut(app: AppHandle) -> Result<String, String> {
     let shortcut = _get_shortcut(&app);
     Ok(shortcut)
 }
 
 /// 获取当前快捷键并在 Tauri 端取消注册
 #[tauri::command]
-pub fn unregister_shortcut<R: Runtime>(app: AppHandle<R>) {
+#[specta::specta]
+pub fn unregister_shortcut(app: AppHandle) {
     let shortcut_str = _get_shortcut(&app);
     let shortcut = shortcut_str
         .parse::<Shortcut>()
@@ -89,11 +91,8 @@ pub fn unregister_shortcut<R: Runtime>(app: AppHandle<R>) {
 
 /// 更改全局快捷键
 #[tauri::command]
-pub fn change_shortcut<R: Runtime>(
-    app: AppHandle<R>,
-    _window: tauri::Window<R>,
-    key: String,
-) -> Result<(), String> {
+#[specta::specta]
+pub fn change_shortcut(app: AppHandle, _window: tauri::Window, key: String) -> Result<(), String> {
     println!("按键: {}", key);
     let shortcut = match key.parse::<Shortcut>() {
         Ok(shortcut) => shortcut,
