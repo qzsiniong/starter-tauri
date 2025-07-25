@@ -1,11 +1,15 @@
 use std::path::PathBuf;
 
-use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
+use tauri::{
+    AppHandle, LogicalPosition, LogicalSize, Manager, PhysicalPosition, PhysicalSize, WebviewUrl,
+    WebviewWindowBuilder, Window,
+};
 use xcap::Monitor;
 
 use crate::{
     constants::WINDOW_LABEL_PREFIX,
     utils::{
+        monitor::get_device_mouse_position,
         path::get_save_dir,
         window::{auto_focus_monitor_window, set_window_level},
     },
@@ -69,6 +73,119 @@ pub fn take_screenshot(app: AppHandle) -> Result<(), String> {
 
     Ok(())
     /* `std::string::String` value */
+}
+
+#[tauri::command]
+pub fn zoom_window(
+    _app: AppHandle,
+    window: Window,
+    initial_size: LogicalSize<f64>,
+    zoom_direction: i32,
+) -> Result<(), String> {
+    // 计算新的缩放比例
+    const ZOOM_SPEED: f64 = 0.02;
+    const MIN_SCALE: f64 = 0.5;
+    const MAX_SCALE: f64 = 3.0;
+
+    let scale_factor = window
+        .scale_factor()
+        .map_err(|e| format!("获取缩放因子失败: {}", e))?;
+
+    let initial_size: PhysicalSize<f64> = initial_size.to_physical(scale_factor);
+
+    // 获取鼠标在屏幕上的绝对位置
+    let cursor_pos = get_window_cursor_position(&window)?;
+
+    // 获取窗口当前位置和大小
+    let pos = get_window_outer_position(&window)?;
+
+    let size = get_window_outer_size(&window)?;
+
+    // ------固定鼠标位置，用于调试-------
+    // let dx = size.width / 2f64;
+    // let dy = size.height / 2f64;
+    // let cursor_pos = PhysicalPosition::new(pos.x + dx, pos.y + dy);
+
+    let current_scale = size.width / initial_size.width;
+
+    let delta = ZOOM_SPEED * zoom_direction as f64;
+    let delta = -1f64 * delta; // 方向取反（上滑+，下滑-）
+    let scale = (current_scale + delta).clamp(MIN_SCALE, MAX_SCALE);
+
+    if (scale - current_scale).abs() < ZOOM_SPEED {
+        return Ok(()); // 缩放没有变化
+    }
+
+    // 计算鼠标在窗口中的相对位置（考虑当前缩放）
+    let relative_mouse_x = (cursor_pos.x - pos.x) / current_scale;
+    let relative_mouse_y = (cursor_pos.y - pos.y) / current_scale;
+
+    // 计算新的窗口大小
+    let new_width = initial_size.width * scale;
+    let new_height = initial_size.height * scale;
+
+    // 计算为保持鼠标位置所需的窗口偏移
+    let delta_x = relative_mouse_x * (scale - current_scale);
+    let delta_y = relative_mouse_y * (scale - current_scale);
+
+    // 计算新的窗口位置
+    let new_x = pos.x - delta_x;
+    let new_y = pos.y - delta_y;
+
+    // 应用新的窗口大小和位置
+    window
+        .set_size(PhysicalSize {
+            width: new_width,
+            height: new_height,
+        })
+        .map_err(|e| format!("设置窗口大小失败: {}", e))?;
+
+    let new_pos = PhysicalPosition { x: new_x, y: new_y };
+    window
+        .set_position(new_pos)
+        .map_err(|e| format!("设置窗口位置失败: {}", e))?;
+
+    Ok(())
+}
+
+fn get_scale_factor(window: &Window) -> Result<f64, String> {
+    window
+        .scale_factor()
+        .map_err(|e| format!("获取窗口大小失败: {}", e))
+}
+
+fn get_window_outer_size(window: &Window) -> Result<PhysicalSize<f64>, String> {
+    window
+        .outer_size()
+        .map(|size| PhysicalSize::new(size.width as f64, size.height as f64))
+        .map_err(|e| format!("获取窗口大小失败: {}", e))
+}
+
+fn get_window_outer_position(window: &Window) -> Result<PhysicalPosition<f64>, String> {
+    window
+        .outer_position()
+        .map(|p| PhysicalPosition {
+            x: p.x as f64,
+            y: p.y as f64,
+        })
+        .map_err(|e| format!("获取窗口位置失败: {}", e))
+}
+
+fn get_window_cursor_position(window: &Window) -> Result<PhysicalPosition<f64>, String> {
+    // let cursor_pos = window
+    //     .cursor_position()
+    //     .map_err(|e| format!("获取鼠标位置失败: {}", e))?;
+
+    // Ok(PhysicalPosition::new(
+    //     cursor_pos.x as f64,
+    //     cursor_pos.y as f64,
+    // ))
+
+    let scale_factor = get_scale_factor(&window)?;
+    let (m_x, m_y) = get_device_mouse_position();
+    let cursor_pos = LogicalPosition::new(m_x, m_y).to_physical(scale_factor);
+
+    Ok(cursor_pos)
 }
 
 fn is_screenshot_ing(app: &AppHandle) -> bool {

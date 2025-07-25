@@ -36,14 +36,14 @@ function getMenus(options: ContextMenuOptions, handler: Handler): NonNullable<Me
     {
       text: '关闭',
       // shift+cmd+X 时也会触发
-      accelerator: 'cmd+X',
+      accelerator: 'cmd+W',
       action() {
         handler.close()
       },
     },
     {
       text: '全部关闭',
-      accelerator: 'shift+cmd+X',
+      accelerator: 'shift+cmd+W',
       action() {
         handler.closeAll()
       },

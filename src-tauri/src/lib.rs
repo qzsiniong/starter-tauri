@@ -14,6 +14,7 @@ pub fn run() {
         .setup(|app| core::setup(&app, app.handle().clone()))
         .invoke_handler(tauri::generate_handler![
             commands::take_screenshot,
+            commands::zoom_window,
             core::shortcut::change_shortcut,
             core::shortcut::unregister_shortcut,
             core::shortcut::get_current_shortcut,

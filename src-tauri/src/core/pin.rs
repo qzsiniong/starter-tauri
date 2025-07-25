@@ -3,6 +3,7 @@ use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use tauri::image::Image;
 use tauri::utils::config::WindowConfig;
 use tauri::AppHandle;
 use tauri::Manager;
@@ -13,7 +14,6 @@ use crate::constants::WINDOW_PIN_LABEL_PREFIX;
 use crate::utils::window::set_window_level;
 
 pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
-    println!("pin");
     let data_dir = app.path().app_data_dir().unwrap();
 
     let clipboard = app.state::<tauri_plugin_clipboard::Clipboard>();
@@ -31,12 +31,19 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
+    // 计算图片路径（hash）
     let mut hasher = DefaultHasher::new();
     bytes.hash(&mut hasher);
     let hash = hasher.finish();
     let image_path = data_dir.join(format!("pin/{hash}.png"));
 
-    fs::write(&image_path, bytes).expect("写入图片失败");
+    // 计算图片尺寸
+    let img = Image::from_bytes(&bytes).unwrap();
+    let width = img.width();
+    let height = img.height();
+
+    // 保存图片
+    fs::write(&image_path, &bytes).expect("写入图片失败");
 
     let label = format!("{}{}", WINDOW_PIN_LABEL_PREFIX, hash);
 
@@ -57,10 +64,16 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     conf.label = label;
     conf.url = WebviewUrl::App(url.as_str().into());
 
+    // 设置窗口大小为图片的宽高
+    conf.width = width.into();
+    conf.height = height.into();
+
     let window = WebviewWindowBuilder::from_config(app, &conf)
         .unwrap()
         .build()
         .unwrap();
+
+    // window.open_devtools();
 
     set_window_level(&app, &window).expect("set_window_level failed");
 

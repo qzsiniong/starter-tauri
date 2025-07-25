@@ -16,8 +16,6 @@ pub fn get_device_mouse_position() -> (i32, i32) {
     let device_state = DeviceState::new();
     let mouse: MouseState = device_state.get_mouse();
 
-    log::debug!("mouse: {:?}", mouse);
-
     mouse.coords
 }
 
