@@ -9,11 +9,7 @@
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
-  "plugins": {
-    "clipboardManager": {
-      "persist": true
-    }
-  },
+  "plugins": {},
   "app": {
     "macOSPrivateApi": true,
     "windows": [
@@ -43,6 +39,22 @@
           "effects": ["sidebar"],
           "state": "active"
         }
+      },
+      {
+        "create": false,
+        "label": "pin-",
+        "url": "/pin?path=",
+        "width": 1,
+        "height": 1,
+        "alwaysOnTop": true,
+        "decorations": false,
+        "maximizable": false,
+        "resizable":false,
+        "transparent": true,
+        "acceptFirstMouse": true,
+        "focus": false,
+        "shadow": false,
+        "zoomHotkeysEnabled": true
       }
     ],
     "security": {

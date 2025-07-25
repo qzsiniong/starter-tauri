@@ -3,6 +3,7 @@ use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 
+use tauri::utils::config::WindowConfig;
 use tauri::AppHandle;
 use tauri::Manager;
 use tauri::WebviewUrl;
@@ -50,21 +51,28 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let url = format!("/pin?path={}", image_path.to_str().unwrap());
-    let win_builder = WebviewWindowBuilder::new(
-        app.app_handle(),
-        &label,
-        WebviewUrl::App(url.as_str().into()),
-    )
-    .always_on_top(true)
-    .shadow(false)
-    .decorations(false)
-    .maximizable(false)
-    .resizable(false)
-    .transparent(true)
-    .inner_size(10f64, 10f64);
+    let mut conf = get_pin_window_conf(app);
 
-    let window = win_builder.build().unwrap();
+    // 修改label
+    conf.label = label;
+    conf.url = WebviewUrl::App(url.as_str().into());
+
+    let window = WebviewWindowBuilder::from_config(app, &conf)
+        .unwrap()
+        .build()
+        .unwrap();
+
     set_window_level(&app, &window).expect("set_window_level failed");
 
     Ok(())
+}
+
+pub fn get_pin_window_conf(app: &AppHandle) -> WindowConfig {
+    app.config()
+        .app
+        .windows
+        .iter()
+        .find(|c| c.label == WINDOW_PIN_LABEL_PREFIX)
+        .unwrap()
+        .clone()
 }
