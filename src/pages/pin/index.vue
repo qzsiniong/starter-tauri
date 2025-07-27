@@ -3,7 +3,6 @@ import { convertFileSrc } from '@tauri-apps/api/core'
 
 import { LogicalSize } from '@tauri-apps/api/dpi'
 import { getAllWebviewWindows, getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { throttle } from 'lodash-es'
 import { XIcon } from 'lucide-vue-next'
 import { commands } from '@/bindings'
 import { useWebviewWindowInitialSize } from '@/composables/useWebviewWindowInitialSize'
@@ -61,17 +60,12 @@ useContextMenu({
   shadowing: shadowing.value,
 }))
 
-async function handleZoom(deltaY: number) {
-  // 发送缩放请求到 Rust 后端
-  await commands.zoomWindow(initialSize.value!, deltaY)
-}
-
-const throttledHandleZoom = throttle(handleZoom, 1)
-
 useEventListener('wheel', async (e) => {
   e.preventDefault() // 阻止页面默认滚动（如果需要）
 
-  throttledHandleZoom(e.deltaY)
+  const res = await commands.zoomWindow(initialSize.value!, e.deltaY)
+
+  console.log('🍋 res', res)
 })
 </script>
 

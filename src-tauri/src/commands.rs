@@ -113,7 +113,7 @@ pub fn zoom_window(
     _app: AppHandle,
     window: Window,
     initial_size: MyLogicalSize,
-    zoom_direction: i32,
+    zoom_direction: f64,
 ) -> Result<(), String> {
     // 计算新的缩放比例
     const ZOOM_SPEED: f64 = 0.02;
@@ -141,7 +141,7 @@ pub fn zoom_window(
 
     let current_scale = size.width / initial_size.width;
 
-    let delta = ZOOM_SPEED * zoom_direction as f64;
+    let delta = ZOOM_SPEED * zoom_direction;
     let delta = -1f64 * delta; // 方向取反（上滑+，下滑-）
     let scale = (current_scale + delta).clamp(MIN_SCALE, MAX_SCALE);
 
