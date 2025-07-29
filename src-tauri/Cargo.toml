@@ -22,23 +22,23 @@ crate-type = [
 tauri-build = { version = "2", features = [ "config-json5" ] }
 
 [dependencies]
-tauri = { version = "2", features = [
+tauri = { workspace = true, features = [
   "protocol-asset",
   "macos-private-api",
   "config-json5",
   "image-png",
 ] }
 tauri-plugin-opener = "2"
-serde = { version = "1", features = [ "derive" ] }
-serde_json = "1"
-xcap = "0.6.2"
 tauri-plugin-log = { version = "2", features = [ "colored" ] }
-log = "0.4.27"
-rdev = { git = "https://github.com/ayangweb/rdev" }
 tauri-plugin-store = "2"
 tauri-plugin-clipboard-manager = "2"
-base64 = "0.22.1"
 tauri-plugin-clipboard = "2.1.11"
+serde = { workspace = true, features = [ "derive" ] }
+serde_json = { workspace = true }
+xcap = "0.6.2"
+log = "0.4.27"
+rdev = "0.5.3"
+base64 = "0.22.1"
 device_query = "4.0.1"
 url = "2.5.4"
 reqwest = { version = "0.12.22", features = [ "blocking" ] }
@@ -52,7 +52,7 @@ tauri-specta = { version = "=2.0.0-rc.21", features = [
 ] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-cocoa = "0.26.1"
+cocoa = { workspace = true }
 objc2 = "0.6.1"
 objc2-app-kit = "0.3.1"
 
