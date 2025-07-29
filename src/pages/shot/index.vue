@@ -33,10 +33,10 @@ async function closeWindow() {
 
     <Toolbar v-if="canvas" :canvas="canvas" class="fixed bottom-10 left-10" />
 
-    <!-- <div
+    <div
       v-show="!isFocused"
       class="mask fixed inset-0 z-0  bg-gray-50/45 backdrop-blur-[1px]"
-    /> -->
+    />
 
     <div class="fixed bottom-200 right-200 z-50">
       <Button variant="destructive" @click="closeWindow">

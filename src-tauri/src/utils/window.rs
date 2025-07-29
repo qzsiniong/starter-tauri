@@ -1,7 +1,7 @@
 use tauri::{AppHandle, Manager};
 use tauri::{Runtime, WebviewWindow};
 
-use crate::constants::WINDOW_LABEL_PREFIX;
+use crate::constants::{WINDOW_LABEL_PREFIX, WINDOW_PICK_COLOR_LABEL_PREFIX};
 
 /**
  * 设置窗口层级为屏幕保护程序级别
@@ -50,9 +50,11 @@ pub fn set_window_level<R: Runtime>(
 }
 
 pub fn auto_focus_monitor_window(app_handle: &AppHandle, mouse_x: f64, mouse_y: f64) {
+    let prefix = vec![WINDOW_LABEL_PREFIX, WINDOW_PICK_COLOR_LABEL_PREFIX];
+
     let windows = app_handle.webview_windows();
     let hovered_window = windows.iter().find(|(label, window)| {
-        if !label.starts_with(WINDOW_LABEL_PREFIX) {
+        if prefix.iter().all(|p| !label.starts_with(*p)) {
             return false;
         }
 

@@ -28,7 +28,7 @@
         "minWidth": 700,
         "minHeight": 480,
         "center": true,
-        "visible": true,
+        "visible": false,
         "transparent": true,
         "maximizable": false,
         "hiddenTitle": true,

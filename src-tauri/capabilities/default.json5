@@ -20,6 +20,10 @@
     "store:default",
     "clipboard-manager:default",
     "clipboard:allow-read-image-base64",
-    "clipboard:allow-read-image-binary"
+    "clipboard:allow-read-image-binary",
+    "clipboard:allow-write-text",
+    "notification:allow-check-permissions",
+    "notification:allow-is-permission-granted",
+    "notification:allow-notify"
   ]
 }

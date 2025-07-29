@@ -27,6 +27,7 @@ tauri = { workspace = true, features = [
   "macos-private-api",
   "config-json5",
   "image-png",
+  "tray-icon"
 ] }
 tauri-plugin-opener = "2"
 tauri-plugin-log = { version = "2", features = [ "colored" ] }
@@ -50,6 +51,8 @@ tauri-specta = { version = "=2.0.0-rc.21", features = [
   "derive",
   "typescript"
 ] }
+autopilot = "0.4.1"
+tauri-plugin-notification = "2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = { workspace = true }

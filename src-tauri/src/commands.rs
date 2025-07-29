@@ -181,6 +181,22 @@ pub fn zoom_window(
     Ok(())
 }
 
+#[tauri::command]
+#[specta::specta]
+pub fn get_color(app: AppHandle, window: Window) -> Result<Vec<u8>, String> {
+    let time = std::time::SystemTime::now();
+    let cursor = get_window_cursor_position(&window)?;
+
+    let scale_factor = window.scale_factor().unwrap();
+    let cursor = cursor.to_logical(scale_factor);
+
+    let result = crate::core::pick_color::get_color(&app, cursor.x, cursor.y, scale_factor);
+
+    log::debug!("执行get_color函数耗时: {:?}", time.elapsed());
+
+    result
+}
+
 fn get_scale_factor(window: &Window) -> Result<f64, String> {
     window
         .scale_factor()

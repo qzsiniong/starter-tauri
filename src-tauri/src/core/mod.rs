@@ -1,17 +1,22 @@
 use std::error::Error;
-use tauri::{App, AppHandle};
+use tauri::App;
 use tauri_plugin_log::{fern::colors::ColoredLevelConfig, Target, TargetKind, TimezoneStrategy};
 
 mod device;
+pub mod pick_color;
 pub mod pin;
 pub mod shortcut;
 mod store;
+mod tray;
 
-pub fn setup(app: &App, app_handle: AppHandle) -> Result<(), Box<dyn Error>> {
-    setup_log(app)?;
+pub fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
+    let app_handle = app.handle();
+    setup_log(&app)?;
     device::start_listening(app_handle.clone())?;
     shortcut::setup(&app);
     // store::setup_store(app.clone())?;
+
+    tray::enable_tray(app);
 
     Ok(())
 }
