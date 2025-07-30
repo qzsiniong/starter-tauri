@@ -3,8 +3,9 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{AppHandle, Emitter};
+use tauri_specta::Event as TauriSpectaEvent;
 
-use crate::utils::window::auto_focus_monitor_window;
+use crate::{core::event::MouseMoveEvent, utils::window::auto_focus_monitor_window};
 
 static IS_RUNNING: AtomicBool = AtomicBool::new(false);
 
@@ -58,6 +59,12 @@ pub fn start_listening(app: AppHandle) -> Result<(), Box<dyn std::error::Error>>
         if let EventType::MouseMove { x, y } = event.event_type {
             // log::debug!("鼠标位置: x={}, y={}", x, y);
             auto_focus_monitor_window(&app, x, y);
+
+            MouseMoveEvent::new(x, y)
+                .emit(&app)
+                .expect("emit mouse move failed");
+            // app.emit("mouse-move", LogicalPosition::new(x, y))
+            //     .expect("emit event failed");
         }
 
         // log::info!("Device event: {:?}", device);

@@ -6,13 +6,13 @@ use std::path::PathBuf;
 
 use rand::Rng;
 use tauri::image::Image;
-use tauri::utils::config::WindowConfig;
 use tauri::AppHandle;
 use tauri::Manager;
 use tauri::WebviewUrl;
 use tauri::WebviewWindowBuilder;
 
 use crate::constants::WINDOW_PIN_LABEL_PREFIX;
+use crate::utils::window::get_window_config;
 use crate::utils::window::set_window_level;
 
 pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
@@ -71,7 +71,7 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let url = format!("/pin?path={}", image_path.to_str().unwrap());
-    let mut conf = get_pin_window_conf(app);
+    let mut conf = get_window_config(app, WINDOW_PIN_LABEL_PREFIX).unwrap();
 
     // 修改label
     conf.label = label;
@@ -93,16 +93,6 @@ pub fn pin(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn get_pin_window_conf(app: &AppHandle) -> WindowConfig {
-    app.config()
-        .app
-        .windows
-        .iter()
-        .find(|c| c.label == WINDOW_PIN_LABEL_PREFIX)
-        .unwrap()
-        .clone()
-}
-
 fn get_random_image(data_dir: &PathBuf) -> std::io::Result<Vec<u8>> {
     let images_dir = data_dir.join("pin/rand");
     // 读取目录中的所有文件
@@ -119,7 +109,7 @@ fn get_random_image(data_dir: &PathBuf) -> std::io::Result<Vec<u8>> {
     fs::read(&selected_image_path)
 }
 
-fn get_random_image_from_picsum() -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+fn _get_random_image_from_picsum() -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     // 1. 随机生成图片尺寸（指定范围避免尺寸过大或过小）
     let mut rng = rand::rng();
     let width = rng.random_range(200..=800); // 宽：200-800 之间随机

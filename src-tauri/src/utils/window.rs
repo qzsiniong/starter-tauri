@@ -1,3 +1,4 @@
+use tauri::utils::config::WindowConfig;
 use tauri::{AppHandle, Manager};
 use tauri::{Runtime, WebviewWindow};
 
@@ -78,6 +79,15 @@ pub fn auto_focus_monitor_window(app_handle: &AppHandle, mouse_x: f64, mouse_y: 
             .set_focus()
             .expect(format!("Failed to set focus:{}", label).as_str());
     }
+}
+
+pub fn get_window_config(app: &AppHandle, label: &str) -> Option<WindowConfig> {
+    app.config()
+        .app
+        .windows
+        .iter()
+        .find(|c| c.label == label)
+        .map(|c| c.clone())
 }
 
 pub fn _exist_webview_window(app_handle: &AppHandle, label: &str) -> bool {

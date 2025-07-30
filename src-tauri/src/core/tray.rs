@@ -5,7 +5,7 @@ use tauri::{
 };
 use tauri::{menu::MenuEvent, AppHandle, Manager};
 
-use crate::core::{pick_color::start_pick_color, pin::pin};
+use crate::core::{pick_color::start_pick_color, pin::pin, ruler::show_rulers};
 
 pub fn enable_tray(app: &mut tauri::App) {
     // 退出按钮
@@ -29,12 +29,15 @@ pub fn enable_tray(app: &mut tauri::App) {
     .unwrap();
     let pick_color_i =
         MenuItem::with_id(app, "pick_color", "屏幕取色", true, None::<&str>).unwrap();
+    let show_rulers_i =
+        MenuItem::with_id(app, "show_rulers", "显示标尺", true, None::<&str>).unwrap();
     // ......
 
     // 按照一定顺序 把按钮 放到 菜单里
     let menu = MenuBuilder::new(app)
         .item(&pin_i)
         .item(&pick_color_i)
+        .item(&show_rulers_i)
         .item(&show_i)
         .separator() // 分割线
         .item(&hide_i)
@@ -72,6 +75,10 @@ fn handle_menu_event(app: &AppHandle, event: MenuEvent) {
         "pick_color" => {
             // 屏幕取色
             start_pick_color(app).expect("屏幕取色失败");
+        }
+        "show_rulers" => {
+            // 屏幕取色
+            show_rulers(app).expect("显示标尺失败");
         }
         "quit" => {
             // 退出应用

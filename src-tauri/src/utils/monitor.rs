@@ -19,7 +19,7 @@ pub fn get_device_mouse_position() -> (i32, i32) {
     mouse.coords
 }
 
-pub fn get_current_monitor() -> Result<xcap::Monitor, XCapError> {
+pub fn _get_current_monitor() -> Result<xcap::Monitor, XCapError> {
     // 获取当前鼠标的位置
     let (mouse_x, mouse_y) = get_device_mouse_position();
 

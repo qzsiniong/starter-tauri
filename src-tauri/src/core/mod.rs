@@ -3,8 +3,10 @@ use tauri::App;
 use tauri_plugin_log::{fern::colors::ColoredLevelConfig, Target, TargetKind, TimezoneStrategy};
 
 mod device;
+pub mod event;
 pub mod pick_color;
 pub mod pin;
+pub mod ruler;
 pub mod shortcut;
 mod store;
 mod tray;

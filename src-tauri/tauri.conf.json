@@ -59,6 +59,42 @@
         "focus": false,
         "shadow": false,
         "zoomHotkeysEnabled": true
+      },
+      {
+        "create": false,
+        "label": "ruler_horizontal",
+        "url": "/ruler/horizontal",
+        "x": 142,
+        "y": 100,
+        "width": 900,
+        "height": 32,
+        "alwaysOnTop": true,
+        "decorations": false,
+        "maximizable": false,
+        "resizable": false,
+        "transparent": true,
+        "acceptFirstMouse": true,
+        "focus": false,
+        "shadow": false,
+        "zoomHotkeysEnabled": true
+      },
+      {
+        "create": false,
+        "label": "ruler_vertical",
+        "url": "/ruler/vertical",
+        "x": 100,
+        "y": 132,
+        "width": 42,
+        "height": 800,
+        "alwaysOnTop": true,
+        "decorations": false,
+        "maximizable": false,
+        "resizable": false,
+        "transparent": true,
+        "acceptFirstMouse": true,
+        "focus": false,
+        "shadow": false,
+        "zoomHotkeysEnabled": true
       }
     ],
     "security": {
