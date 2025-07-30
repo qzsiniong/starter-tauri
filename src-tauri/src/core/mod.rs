@@ -4,7 +4,7 @@ use tauri_plugin_log::{fern::colors::ColoredLevelConfig, Target, TargetKind, Tim
 
 mod device;
 pub mod event;
-pub mod pick_color;
+pub mod eye_dropper;
 pub mod pin;
 pub mod ruler;
 pub mod shortcut;

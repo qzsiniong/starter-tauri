@@ -190,7 +190,7 @@ pub fn get_color(app: AppHandle, window: Window) -> Result<Vec<u8>, String> {
     let scale_factor = window.scale_factor().unwrap();
     let cursor = cursor.to_logical(scale_factor);
 
-    let result = crate::core::pick_color::get_color(&app, cursor.x, cursor.y, scale_factor);
+    let result = crate::core::eye_dropper::get_color(&app, cursor.x, cursor.y, scale_factor);
 
     log::debug!("执行get_color函数耗时: {:?}", time.elapsed());
 

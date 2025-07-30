@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type {
+  Options as SendNotificationOptions,
+} from '@tauri-apps/plugin-notification'
+import { getAllWebviewWindows } from '@tauri-apps/api/webviewWindow'
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
-  Options as SendNotificationOptions,
-} from '@tauri-apps/plugin-notification';
-import { writeText } from 'tauri-plugin-clipboard-api'
-import { getAllWebviewWindows } from '@tauri-apps/api/webviewWindow'
+} from '@tauri-apps/plugin-notification'
 import { chunk } from 'lodash-es'
+import { writeText } from 'tauri-plugin-clipboard-api'
 import { commands } from '@/bindings'
 import { rgbToHex } from './util'
 
@@ -22,7 +24,7 @@ watch(esc, (v) => {
 async function closeWindow() {
   const windows = await getAllWebviewWindows()
   windows.forEach((window) => {
-    if (window.label.startsWith('pick_color-')) {
+    if (window.label.startsWith('eye-dropper-')) {
       window.close()
     }
   })
@@ -45,7 +47,7 @@ const computedData = computed(() => {
       }),
     }
   })
-  const width = Math.sqrt(d.length);
+  const width = Math.sqrt(d.length)
   const dd = chunk(d, width)
   if (dd.length % 2 === 0) {
     dd.pop()
@@ -60,15 +62,15 @@ const computedData = computed(() => {
 })
 
 const cls = computed(() => {
-  let cls = [] as string[];
-  if (position.x > window.innerWidth - 200){
+  const cls = [] as string[]
+  if (position.x > window.innerWidth - 200) {
     cls.push('-ml-[100%]')
   }
-  if (position.y > window.innerHeight - 200){
+  if (position.y > window.innerHeight - 200) {
     cls.push('-mt-[100%]')
   }
 
-  return cls.join(' ');
+  return cls.join(' ')
 })
 
 useEventListener('mousemove', async (e) => {
@@ -78,7 +80,6 @@ useEventListener('mousemove', async (e) => {
   const res = await commands.getColor()
   if (res.status === 'ok') {
     pickedData.value = res.data
-
   }
   else {
     console.error('💛 s.error', res.error)
@@ -86,9 +87,9 @@ useEventListener('mousemove', async (e) => {
 })
 
 useEventListener('click', async () => {
-  console.log(`%c${computedData.value.color}`, `background: ${computedData.value.color}`);
+  console.log(`%c${computedData.value.color}`, `background: ${computedData.value.color}`)
 
-  await writeText(computedData.value.color);
+  await writeText(computedData.value.color)
 
   await notification({
     title: `取色成功`,
@@ -96,22 +97,21 @@ useEventListener('click', async () => {
   })
 
   closeWindow()
-});
+})
 
-
-async function notification(options: SendNotificationOptions|string) {
+async function notification(options: SendNotificationOptions | string) {
   // 你有发送通知的权限吗？
-  let permissionGranted = await isPermissionGranted();
+  let permissionGranted = await isPermissionGranted()
 
   // 如果没有，我们需要请求它
   if (!permissionGranted) {
-    const permission = await requestPermission();
-    permissionGranted = permission === 'granted';
+    const permission = await requestPermission()
+    permissionGranted = permission === 'granted'
   }
 
   // 一旦获得许可，我们就可以发送通知
   if (permissionGranted) {
-    sendNotification(options);
+    sendNotification(options)
   }
 }
 </script>
@@ -119,8 +119,8 @@ async function notification(options: SendNotificationOptions|string) {
 <template>
   <div class="fixed" :style="{ left: `${position.x}px`, top: `${position.y}px` }">
     <div class="size-32">
-      <div 
-        class="cursor-none size-full rounded-full border-4 border-white shadow-lg overflow-hidden" 
+      <div
+        class="cursor-none size-full rounded-full border-4 border-white shadow-lg overflow-hidden"
         :class="cls"
         :style1="{ marginLeft: '-50%', marginTop: '-50%' }"
       >

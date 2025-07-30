@@ -1,23 +1,22 @@
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 use xcap::Monitor;
 
-use crate::{constants::WINDOW_PICK_COLOR_LABEL_PREFIX, utils::window::set_window_level};
+use crate::{constants::WINDOW_EYE_DROPPER_LABEL_PREFIX, utils::window::set_window_level};
 
-pub fn start_pick_color(app: &AppHandle) -> Result<(), String> {
+pub fn start_eye_dropper(app: &AppHandle) -> Result<(), String> {
     let monitors = Monitor::all().unwrap();
     for (i, monitor) in monitors.iter().enumerate() {
-        let label = format!("{}{}", WINDOW_PICK_COLOR_LABEL_PREFIX, i);
+        let label = format!("{}{}", WINDOW_EYE_DROPPER_LABEL_PREFIX, i);
         let window = app.get_webview_window(label.as_str());
 
         if let Some(window) = window {
             window.destroy().expect("destroy window failed");
         }
 
-        let url = format!("/pick_color");
         let win_builder = WebviewWindowBuilder::new(
             app.app_handle(),
             &label,
-            WebviewUrl::App(url.as_str().into()),
+            WebviewUrl::App("/eye-dropper".into()),
         )
         .always_on_top(true)
         .decorations(false)

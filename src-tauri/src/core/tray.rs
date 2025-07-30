@@ -5,7 +5,7 @@ use tauri::{
 };
 use tauri::{menu::MenuEvent, AppHandle, Manager};
 
-use crate::core::{pick_color::start_pick_color, pin::pin, ruler::show_rulers};
+use crate::core::{eye_dropper::start_eye_dropper, pin::pin, ruler::show_rulers};
 
 pub fn enable_tray(app: &mut tauri::App) {
     // 退出按钮
@@ -27,8 +27,8 @@ pub fn enable_tray(app: &mut tauri::App) {
         Some("Cmd+Ctrl+Shift+Alt+P"),
     )
     .unwrap();
-    let pick_color_i =
-        MenuItem::with_id(app, "pick_color", "屏幕取色", true, None::<&str>).unwrap();
+    let eye_dropper_i =
+        MenuItem::with_id(app, "eye_dropper", "屏幕取色", true, None::<&str>).unwrap();
     let show_rulers_i =
         MenuItem::with_id(app, "show_rulers", "显示标尺", true, None::<&str>).unwrap();
     // ......
@@ -36,7 +36,7 @@ pub fn enable_tray(app: &mut tauri::App) {
     // 按照一定顺序 把按钮 放到 菜单里
     let menu = MenuBuilder::new(app)
         .item(&pin_i)
-        .item(&pick_color_i)
+        .item(&eye_dropper_i)
         .item(&show_rulers_i)
         .item(&show_i)
         .separator() // 分割线
@@ -72,9 +72,9 @@ fn handle_menu_event(app: &AppHandle, event: MenuEvent) {
             // 贴图
             pin(app).expect("贴图失败");
         }
-        "pick_color" => {
+        "eye_dropper" => {
             // 屏幕取色
-            start_pick_color(app).expect("屏幕取色失败");
+            start_eye_dropper(app).expect("屏幕取色失败");
         }
         "show_rulers" => {
             // 屏幕取色
